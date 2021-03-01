@@ -63,18 +63,20 @@ fibonnaci :: Integer -> Integer
 fibonnaci x
   | x < 1 = 0
   | x < 3 = 1
-  | otherwise = snd (getCurrentNumber (fibonnaciHelper (FibState 0 1 0) x))
+  | otherwise = snd $ getCurrentNumber $ fibonnaciHelper initState x
+  where initState = (FibState 0 1 0)
 
 fibonnaciHelper :: FibState -> Integer -> FibState
-fibonnaciHelper state 0 = state
-fibonnaciHelper state x = fibonnaciHelper (applyFibCalc state) (x - 1)
+fibonnaciHelper state x
+  | x < 1 = state
+  | otherwise = fibonnaciHelper (applyFibCalc state) (x - 1)
 
 applyFibCalc :: FibState -> FibState
 applyFibCalc state = do
-  let num1 = snd (getPreviousPreviousNumber state)
-  let num2 = snd (getPreviousNumber state)
+  let num1 = snd $ getPreviousPreviousNumber state
+  let num2 = snd $ getPreviousNumber state
   let curr = num1 + num2
-  let state' = fst (setPreviousPreviousNumber num2 state)
-  let state'' = fst (setPreviousNumber curr state')
-  let stateUpdated = fst (setCurrentNumber curr state'')
+  let state' = fst $ setPreviousPreviousNumber num2 state
+  let state'' = fst $ setPreviousNumber curr state'
+  let stateUpdated = fst $ setCurrentNumber curr state''
   stateUpdated
