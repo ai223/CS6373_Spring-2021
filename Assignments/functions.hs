@@ -15,16 +15,16 @@ maxmHelper (x:xs) y =
 
 -- Q2 (Write a program that succeeds if the intersection of two given list parameters is empty.)
 
-intersects :: Ord a => [a] -> [a] -> Bool
-intersects xs ys = intersectsHelper (sort' xs) (sort' ys)
+noIntersection :: Ord a => [a] -> [a] -> Bool
+noIntersection xs ys = noIntersectionHelper (sort' xs) (sort' ys)
 
-intersectsHelper :: Ord a => [a] -> [a] -> Bool
-intersectsHelper [] _ = False
-intersectsHelper _ [] = False
-intersectsHelper list1@(x:xs) list2@(y:ys)
-  | y > x = intersectsHelper xs list2
-  | x > y = intersectsHelper list1 ys
-  | otherwise = True
+noIntersectionHelper :: Ord a => [a] -> [a] -> Bool
+noIntersectionHelper [] _ = True
+noIntersectionHelper _ [] = True
+noIntersectionHelper list1@(x:xs) list2@(y:ys)
+  | y > x = noIntersectionHelper xs list2
+  | x > y = noIntersectionHelper list1 ys
+  | otherwise = False
 
 sort' :: Ord a => [a] -> [a]
 sort' [] = []
@@ -35,19 +35,25 @@ sort' (x:xs) = (sort' smaller) ++ [x] ++ (sort' larger)
 -- Q3 (Write a program that returns a list containing the union of the elements of two given lists.
 -- Assume the list represents sets (i.e. unique elements) and the union returns unique elements.)
 
--- intersection :: Ord a => [a] -> [a] -> [a]
--- intersection [] _ = []
--- intersection _ [] = []
--- intersection xs ys = intersectionHelper (sort' xs) (sort' ys) []
---
--- intersectionHelper :: Ord a => [a] -> [a] -> [a] -> [a]
--- intersectionHelper [] ys zs = zs
--- intersectionHelper xs [] zs = zs
--- intersectionHelper list1@(x:xs) list2@(y:ys) zs =
---   case compare x y of
---     LT -> unionHelper xs list2 zs
---     EQ -> unionHelper xs ys (x:zs)
---     GT -> unionHelper list1 ys zs
+union :: Ord a => [a] -> [a] -> [a]
+union [] [] = []
+union [] ys = ys
+union xs [] = xs
+union xs ys = unionHelper (sort' xs) (sort' ys) []
+
+unionHelper :: Ord a => [a] -> [a] -> [a] -> [a]
+unionHelper xs [] zs = merge xs zs
+unionHelper [] ys zs = merge ys zs
+unionHelper (x:xs) (y:ys) zs =
+  case compare x y of
+    LT -> unionHelper xs (y:ys) (x:zs)
+    EQ -> unionHelper xs ys (x:zs)
+    GT -> unionHelper (x:xs) ys (y:zs)
+
+merge :: Ord a => [a] -> [a] -> [a]
+merge xs [] = xs
+merge [] ys = ys
+merge (x:xs) (y:ys) = x : y : merge xs ys
 
 -- Q4 (Write a program that returns the final element of a list)
 
