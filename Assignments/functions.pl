@@ -12,7 +12,12 @@ max(A, B, R) :- A < B, R is B.
 
 -- Q2 (Write a program that succeeds if the intersection of two given list parameters is empty.)
 
-# TODO
+noIntersection([], _).
+noIntersection([X|XS], L2) :-
+    \+(inlist(X, L2)), noIntersection(XS, L2).
+
+inlist(X, [X|_]).
+inlist(X, [_|XS]) :- inlist(X, XS).
 
 -- Q3 (Write a program that returns a list containing the union of the elements of two given lists.
 -- Assume the list represents sets (i.e. unique elements) and the union returns unique elements.)
